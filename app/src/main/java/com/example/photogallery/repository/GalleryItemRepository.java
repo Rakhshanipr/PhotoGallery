@@ -58,6 +58,7 @@ public class GalleryItemRepository {
             GalleryItem item = new GalleryItem(title, id, url);
             list.add(item);
         }
+        int i=0;
 
         return list;
     }
