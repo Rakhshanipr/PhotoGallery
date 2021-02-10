@@ -34,6 +34,7 @@ public class GalleryItem {
     public String getUrl() {
         return mUrl;
     }
+    int o;
 
     public void setUrl(String url) {
         mUrl = url;
