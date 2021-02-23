@@ -2,11 +2,14 @@ package com.example.photogallery.services.model;
 
 public class GalleryItem {
 
+    //region defind parameter
     String mTitle;
     String mId;
     String mUrl;
+    //endregion
 
     public GalleryItem() {
+
     }
 
     public GalleryItem(String title, String id, String url) {
@@ -34,7 +37,6 @@ public class GalleryItem {
     public String getUrl() {
         return mUrl;
     }
-    int o;
 
     public void setUrl(String url) {
         mUrl = url;

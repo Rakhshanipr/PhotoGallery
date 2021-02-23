@@ -14,26 +14,35 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.photogallery.R;
 import com.example.photogallery.adapter.RecyclerViewGalleryAdapter;
 import com.example.photogallery.databinding.FragmentGalleryBinding;
+import com.example.photogallery.services.network.ImageDownloader;
 import com.example.photogallery.viewmodel.GalleryItemViewModel;
-
-import java.io.IOException;
 
 public class GalleryFragment extends Fragment {
 
-    FragmentGalleryBinding mFragmentGalleryBindingm;
-    GalleryItemViewModel mGalleryItemViewModel;
-    RecyclerViewGalleryAdapter mGalleryAdapter;
-
+    //region deinf static method and variable
     public static GalleryFragment newInstance() {
         GalleryFragment fragment = new GalleryFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
+    //endregion
+
+    //region defind variable
+    FragmentGalleryBinding mFragmentGalleryBindingm;
+    GalleryItemViewModel mGalleryItemViewModel;
+    RecyclerViewGalleryAdapter mGalleryAdapter;
+
+    ImageDownloader<RecyclerViewGalleryAdapter.ViewHolder> mImageDownloader;
+    //endregion
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mImageDownloader=new ImageDownloader();
+
+        mImageDownloader.start();
+        mImageDownloader.getLooper();
     }
 
     @Override
@@ -56,7 +65,7 @@ public class GalleryFragment extends Fragment {
 
         mGalleryItemViewModel = new GalleryItemViewModel();
 
-        FetchItem fetchItem=new FetchItem();
+        FetchItem fetchItem = new FetchItem();
         fetchItem.execute();
 
     }
@@ -68,7 +77,7 @@ public class GalleryFragment extends Fragment {
 
             String result = "";
 
-           mGalleryAdapter=new RecyclerViewGalleryAdapter(getContext());
+            mGalleryAdapter = new RecyclerViewGalleryAdapter(getContext(),mImageDownloader);
             Log.e("FF", result);
             return mGalleryAdapter;
         }

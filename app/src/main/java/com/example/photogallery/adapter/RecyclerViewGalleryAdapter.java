@@ -1,6 +1,7 @@
 package com.example.photogallery.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,20 +13,27 @@ import com.example.photogallery.R;
 import com.example.photogallery.databinding.GalleryItemBinding;
 import com.example.photogallery.repository.GalleryItemRepository;
 import com.example.photogallery.services.model.GalleryItem;
+import com.example.photogallery.services.network.ImageDownloader;
 import com.example.photogallery.viewmodel.GalleryItemViewModel;
 
 import java.util.List;
 
 public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerViewGalleryAdapter.ViewHolder> {
 
+    //region defind variable
     List<GalleryItem> mList;
     Context mContext;
     GalleryItemRepository mGalleryItemRepository;
 
-    public RecyclerViewGalleryAdapter(Context context) {
-        mGalleryItemRepository=GalleryItemRepository.getInstance();
-        mList=mGalleryItemRepository.getItems();
-        mContext=context;
+    ImageDownloader<ViewHolder> mImageDownloader;
+    //endregion
+
+    public RecyclerViewGalleryAdapter(Context context,ImageDownloader imageDownloader) {
+        mGalleryItemRepository = GalleryItemRepository.getInstance();
+        mList = mGalleryItemRepository.getItems();
+        mContext = context;
+
+        mImageDownloader=imageDownloader;
     }
 
     @NonNull
@@ -51,7 +59,7 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
         return mList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         GalleryItem mGalleryItem;
         GalleryItemBinding mGalleryItemBinding;
@@ -60,15 +68,21 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
             super(galleryItemBinding.getRoot());
 
 
-
-            mGalleryItemBinding=galleryItemBinding;
+            mGalleryItemBinding = galleryItemBinding;
 
             mGalleryItemBinding.setGallertItemViewModel(new GalleryItemViewModel());
         }
 
         public void bind(GalleryItem galleryItem) {
             mGalleryItem = galleryItem;
-            mGalleryItemBinding.getGallertItemViewModel().setGalleryItem(galleryItem);
+
+            //queue message to looper
+            mImageDownloader.queueImageMessage(this,mGalleryItem.getUrl());
+//            mGalleryItemBinding.getGallertItemViewModel().setGalleryItem(galleryItem);
+        }
+
+        void bindBitmap(Bitmap bitmap){
+            
         }
 
     }
