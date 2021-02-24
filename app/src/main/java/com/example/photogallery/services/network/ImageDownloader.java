@@ -1,8 +1,17 @@
 package com.example.photogallery.services.network;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Message;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
+
+import com.example.photogallery.adapter.RecyclerViewGalleryAdapter;
+
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ImageDownloader<T> extends HandlerThread {
@@ -14,6 +23,25 @@ public class ImageDownloader<T> extends HandlerThread {
 
     Handler mRequestHandler;
     ConcurrentHashMap<T, String> mTargetUri = new ConcurrentHashMap<>();
+    CallBacks mCallBacks;
+
+    Handler mHandlerSetPhoto;
+
+    public Handler getHandlerSetPhoto() {
+        return mHandlerSetPhoto;
+    }
+
+    public void setHandlerSetPhoto(Handler handlerSetPhoto) {
+        mHandlerSetPhoto = handlerSetPhoto;
+    }
+
+    public CallBacks getCallBacks() {
+        return mCallBacks;
+    }
+
+    public void setCallBacks(CallBacks callBacks) {
+        mCallBacks = callBacks;
+    }
 
     public ImageDownloader() {
         super(TAG);
@@ -22,14 +50,49 @@ public class ImageDownloader<T> extends HandlerThread {
     @Override
     protected void onLooperPrepared() {
         super.onLooperPrepared();
-        mRequestHandler = new Handler();
+        mRequestHandler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == MESSAGE_DOWNLOAD) {
+                    RecyclerViewGalleryAdapter.ViewHolder viewHplder= (RecyclerViewGalleryAdapter.ViewHolder) msg.obj;
+
+                    try {
+                        byte[] photoByteArray=new FlickerFetcher().getBytes(viewHplder.mGalleryItem.getUrl());
+
+                        Bitmap bitmap= BitmapFactory
+                                .decodeByteArray(photoByteArray,0,photoByteArray.length);
+
+                        mHandlerSetPhoto.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (viewHplder.mGalleryItem.getUrl()!=mTargetUri.get(viewHplder))
+                                    return;
+
+                                mCallBacks.bindBitmap(viewHplder,bitmap);
+
+                            }
+                        });
+
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
     }
 
     public void queueImageMessage(T target, String url) {
         if (url != null) {
             mTargetUri.put(target, url);
-            mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, url).sendToTarget();
+            mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target).sendToTarget();
         }
 
+    }
+
+    public interface CallBacks{
+        void bindBitmap(RecyclerViewGalleryAdapter.ViewHolder target, Bitmap bitmap);
     }
 }

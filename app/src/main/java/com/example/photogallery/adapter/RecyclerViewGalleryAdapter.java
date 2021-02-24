@@ -2,6 +2,8 @@ package com.example.photogallery.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -26,9 +28,20 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
     GalleryItemRepository mGalleryItemRepository;
 
     ImageDownloader<ViewHolder> mImageDownloader;
+
+    android.os.Handler mHandler;
     //endregion
 
-    public RecyclerViewGalleryAdapter(Context context,ImageDownloader imageDownloader) {
+
+    public android.os.Handler getHandler() {
+        return mHandler;
+    }
+
+    public void setHandler(Handler handler) {
+        mHandler = handler;
+    }
+
+    public RecyclerViewGalleryAdapter(Context context, ImageDownloader imageDownloader) {
         mGalleryItemRepository = GalleryItemRepository.getInstance();
         mList = mGalleryItemRepository.getItems();
         mContext = context;
@@ -61,8 +74,8 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        GalleryItem mGalleryItem;
-        GalleryItemBinding mGalleryItemBinding;
+       public GalleryItem mGalleryItem;
+       public GalleryItemBinding mGalleryItemBinding;
 
         public ViewHolder(GalleryItemBinding galleryItemBinding) {
             super(galleryItemBinding.getRoot());
@@ -76,13 +89,16 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
         public void bind(GalleryItem galleryItem) {
             mGalleryItem = galleryItem;
 
-            //queue message to looper
+            mGalleryItemBinding.imageViewPhoto.setImageResource(R.mipmap.ic_launcher);
             mImageDownloader.queueImageMessage(this,mGalleryItem.getUrl());
-//            mGalleryItemBinding.getGallertItemViewModel().setGalleryItem(galleryItem);
-        }
 
-        void bindBitmap(Bitmap bitmap){
-            
+            mImageDownloader.setHandlerSetPhoto(mHandler);
+            mImageDownloader.setCallBacks(new ImageDownloader.CallBacks() {
+                @Override
+                public void bindBitmap(ViewHolder viewHolder,Bitmap bitmap) {
+                    viewHolder.mGalleryItemBinding.imageViewPhoto.setImageBitmap(bitmap);
+                }
+            });
         }
 
     }

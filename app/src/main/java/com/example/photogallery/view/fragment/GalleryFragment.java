@@ -2,6 +2,7 @@ package com.example.photogallery.view.fragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.photogallery.R;
 import com.example.photogallery.adapter.RecyclerViewGalleryAdapter;
@@ -33,6 +34,8 @@ public class GalleryFragment extends Fragment {
     GalleryItemViewModel mGalleryItemViewModel;
     RecyclerViewGalleryAdapter mGalleryAdapter;
 
+    Handler mHandler;
+
     ImageDownloader<RecyclerViewGalleryAdapter.ViewHolder> mImageDownloader;
     //endregion
 
@@ -54,15 +57,13 @@ public class GalleryFragment extends Fragment {
                 , false);
 
         initial();
-
+mHandler=new Handler();
         return mFragmentGalleryBindingm.getRoot();
     }
 
     private void initial() {
         mFragmentGalleryBindingm.recyclerViewListGallery.setLayoutManager(
-                new LinearLayoutManager(getContext()));
-
-
+                new GridLayoutManager(getContext(),3));
         mGalleryItemViewModel = new GalleryItemViewModel();
 
         FetchItem fetchItem = new FetchItem();
@@ -78,6 +79,8 @@ public class GalleryFragment extends Fragment {
             String result = "";
 
             mGalleryAdapter = new RecyclerViewGalleryAdapter(getContext(),mImageDownloader);
+            mGalleryAdapter.setHandler(mHandler);
+
             Log.e("FF", result);
             return mGalleryAdapter;
         }

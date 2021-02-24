@@ -28,6 +28,8 @@ public class GalleryItemViewModel {
         return result;
     }
 
+
+
     public String getTitle() {
         return mGalleryItem.getTitle();
     }
