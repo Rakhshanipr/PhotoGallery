@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.example.photogallery.R;
 import com.example.photogallery.adapter.RecyclerViewGalleryAdapter;
 import com.example.photogallery.databinding.FragmentGalleryBinding;
-import com.example.photogallery.services.network.ImageDownloader;
+import com.example.photogallery.services.ImageDownloader;
 import com.example.photogallery.viewmodel.GalleryItemViewModel;
 
 public class GalleryFragment extends Fragment {
@@ -42,7 +42,7 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mImageDownloader=new ImageDownloader();
+        mImageDownloader = new ImageDownloader();
 
         mImageDownloader.start();
         mImageDownloader.getLooper();
@@ -57,13 +57,13 @@ public class GalleryFragment extends Fragment {
                 , false);
 
         initial();
-mHandler=new Handler();
+        mHandler = new Handler();
         return mFragmentGalleryBindingm.getRoot();
     }
 
     private void initial() {
         mFragmentGalleryBindingm.recyclerViewListGallery.setLayoutManager(
-                new GridLayoutManager(getContext(),3));
+                new GridLayoutManager(getContext(), 3));
         mGalleryItemViewModel = new GalleryItemViewModel();
 
         FetchItem fetchItem = new FetchItem();
@@ -78,7 +78,7 @@ mHandler=new Handler();
 
             String result = "";
 
-            mGalleryAdapter = new RecyclerViewGalleryAdapter(getContext(),mImageDownloader);
+            mGalleryAdapter = new RecyclerViewGalleryAdapter(getContext(), mImageDownloader);
             mGalleryAdapter.setHandler(mHandler);
 
             Log.e("FF", result);

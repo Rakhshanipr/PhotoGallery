@@ -1,4 +1,4 @@
-package com.example.photogallery.services.network;
+package com.example.photogallery.services;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,9 +7,9 @@ import android.os.HandlerThread;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 
 import com.example.photogallery.adapter.RecyclerViewGalleryAdapter;
+import com.example.photogallery.services.network.FlickrFetcher;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,7 +58,7 @@ public class ImageDownloader<T> extends HandlerThread {
                     RecyclerViewGalleryAdapter.ViewHolder viewHplder= (RecyclerViewGalleryAdapter.ViewHolder) msg.obj;
 
                     try {
-                        byte[] photoByteArray=new FlickerFetcher().getBytes(viewHplder.mGalleryItem.getUrl());
+                        byte[] photoByteArray=new FlickrFetcher().getBytes(viewHplder.mPhotoItem.getUrlS());
 
                         Bitmap bitmap= BitmapFactory
                                 .decodeByteArray(photoByteArray,0,photoByteArray.length);
@@ -66,15 +66,13 @@ public class ImageDownloader<T> extends HandlerThread {
                         mHandlerSetPhoto.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (viewHplder.mGalleryItem.getUrl()!=mTargetUri.get(viewHplder))
+                                if (viewHplder.mPhotoItem.getUrlS()!=mTargetUri.get(viewHplder))
                                     return;
 
                                 mCallBacks.bindBitmap(viewHplder,bitmap);
 
                             }
                         });
-
-
 
                     } catch (IOException e) {
                         e.printStackTrace();

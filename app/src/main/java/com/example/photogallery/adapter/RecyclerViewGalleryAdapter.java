@@ -3,7 +3,6 @@ package com.example.photogallery.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -14,16 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.photogallery.R;
 import com.example.photogallery.databinding.GalleryItemBinding;
 import com.example.photogallery.repository.GalleryItemRepository;
-import com.example.photogallery.services.model.GalleryItem;
-import com.example.photogallery.services.network.ImageDownloader;
+import com.example.photogallery.services.ImageDownloader;
+import com.example.photogallery.services.model.network.PhotoItem;
 import com.example.photogallery.viewmodel.GalleryItemViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerViewGalleryAdapter.ViewHolder> {
 
     //region defind variable
-    List<GalleryItem> mList;
+    List<PhotoItem> mList;
     Context mContext;
     GalleryItemRepository mGalleryItemRepository;
 
@@ -65,6 +65,7 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(mList.get(position));
+
     }
 
     @Override
@@ -74,7 +75,7 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-       public GalleryItem mGalleryItem;
+       public PhotoItem mPhotoItem;
        public GalleryItemBinding mGalleryItemBinding;
 
         public ViewHolder(GalleryItemBinding galleryItemBinding) {
@@ -86,11 +87,12 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
             mGalleryItemBinding.setGallertItemViewModel(new GalleryItemViewModel());
         }
 
-        public void bind(GalleryItem galleryItem) {
-            mGalleryItem = galleryItem;
+        public void bind(PhotoItem galleryItem) {
+            mPhotoItem = galleryItem;
 
+//            Picasso.get().load(mPhotoItem.getUrlS()).into(mGalleryItemBinding.imageViewPhoto);
             mGalleryItemBinding.imageViewPhoto.setImageResource(R.mipmap.ic_launcher);
-            mImageDownloader.queueImageMessage(this,mGalleryItem.getUrl());
+            mImageDownloader.queueImageMessage(this, mPhotoItem.getUrlS());
 
             mImageDownloader.setHandlerSetPhoto(mHandler);
             mImageDownloader.setCallBacks(new ImageDownloader.CallBacks() {
@@ -99,7 +101,7 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
                     viewHolder.mGalleryItemBinding.imageViewPhoto.setImageBitmap(bitmap);
                 }
             });
-        }
 
+        }
     }
 }

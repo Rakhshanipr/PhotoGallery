@@ -1,7 +1,7 @@
 package com.example.photogallery.viewmodel;
 
 import com.example.photogallery.services.model.GalleryItem;
-import com.example.photogallery.services.network.FlickerFetcher;
+import com.example.photogallery.services.network.FlickrFetcher;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ public class GalleryItemViewModel {
     }
 
     public static String retResult(String urlString) throws IOException {
-        FlickerFetcher flickerFetcher = new FlickerFetcher();
+        FlickrFetcher flickerFetcher = new FlickrFetcher();
         String result = flickerFetcher.getString(urlString);
         return result;
     }

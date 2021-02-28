@@ -8,9 +8,13 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class FlickerFetcher {
+public class FlickrFetcher {
 
     //region defind static method and variable
+    public static final String BASE_PATH = "https://www.flickr.com/services/rest";
+    public static final String METHOD_RECENT = "flickr.photos.getRecent";
+    public static final String API_KEY = "a4ac80c364bd9e6517ec7d825b48c1f7";
+
     public static String generateUri() {
         Uri uri = Uri.parse(BASE_PATH)
                 .buildUpon()
@@ -23,13 +27,12 @@ public class FlickerFetcher {
 
         return uri.toString();
     }
+
     //endregion
 
     //region defind variable
 
-    public static final String BASE_PATH = "https://www.flickr.com/services/rest";
-    public static final String METHOD_RECENT = "flickr.photos.getRecent";
-    public static final String API_KEY = "a4ac80c364bd9e6517ec7d825b48c1f7";
+
 
     //endregion
 
