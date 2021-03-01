@@ -14,7 +14,7 @@ import com.example.photogallery.R;
 import com.example.photogallery.databinding.GalleryItemBinding;
 import com.example.photogallery.repository.GalleryItemRepository;
 import com.example.photogallery.services.ImageDownloader;
-import com.example.photogallery.services.model.network.PhotoItem;
+import com.example.photogallery.services.model.GalleryItem;
 import com.example.photogallery.viewmodel.GalleryItemViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -23,7 +23,7 @@ import java.util.List;
 public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerViewGalleryAdapter.ViewHolder> {
 
     //region defind variable
-    List<PhotoItem> mList;
+    List<GalleryItem> mList;
     Context mContext;
     GalleryItemRepository mGalleryItemRepository;
 
@@ -76,7 +76,7 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-       public PhotoItem mPhotoItem;
+       public GalleryItem mGalleryItem;
        public GalleryItemBinding mGalleryItemBinding;
 
         public ViewHolder(GalleryItemBinding galleryItemBinding) {
@@ -88,12 +88,12 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
             mGalleryItemBinding.setGallertItemViewModel(new GalleryItemViewModel());
         }
 
-        public void bind(PhotoItem galleryItem) {
-            mPhotoItem = galleryItem;
+        public void bind(GalleryItem galleryItem) {
+            mGalleryItem = galleryItem;
 
-//            Picasso.get().load(mPhotoItem.getUrlS()).into(mGalleryItemBinding.imageViewPhoto);
+//            Picasso.get().load(mGalleryItem.getUrlS()).into(mGalleryItemBinding.imageViewPhoto);
             mGalleryItemBinding.imageViewPhoto.setImageResource(R.mipmap.ic_launcher);
-            mImageDownloader.queueImageMessage(this, mPhotoItem.getUrlS());
+            mImageDownloader.queueImageMessage(this, mGalleryItem.getUrl());
 
             mImageDownloader.setHandlerSetPhoto(mHandler);
             mImageDownloader.setCallBacks(new ImageDownloader.CallBacks() {

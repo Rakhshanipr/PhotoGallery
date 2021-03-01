@@ -1,17 +1,19 @@
 package com.example.photogallery.repository;
 
+import com.example.photogallery.services.GetGalleryItemDeserialize;
 import com.example.photogallery.services.model.GalleryItem;
 import com.example.photogallery.services.model.network.FlickrResponse;
-import com.example.photogallery.services.model.network.PhotoItem;
 import com.example.photogallery.services.network.FlickrFetcher;
 import com.example.photogallery.services.network.IFlickrService;
 import com.example.photogallery.services.network.RetrofitInstance;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,16 +41,19 @@ public class GalleryItemRepository {
     //endregion
 
     public GalleryItemRepository(){
-        Retrofit retrofit= RetrofitInstance.getInstance();
+
+        Type type=new TypeToken<List<GalleryItem>>(){}.getType();
+        Object typeAdapter=new GetGalleryItemDeserialize()7;
+        Retrofit retrofit= RetrofitInstance.getInstance(type,typeAdapter);
         mFlickrService=retrofit.create(IFlickrService.class);
     }
 
-    public List<PhotoItem> getItems() {
+    public List<GalleryItem> getItems() {
 
-        Call<FlickrResponse> call=mFlickrService.listItems(RetrofitInstance.QUERY_PARAMETERS);
+        Call<List<GalleryItem>> call=mFlickrService.listItems(RetrofitInstance.QUERY_PARAMETERS);
         try {
-            Response<FlickrResponse> response = call.execute();
-            return response.body().getPhotos().getPhoto();
+            Response<List<GalleryItem>> response = call.execute();
+            return response.body();
         } catch (IOException e) {
             e.printStackTrace();
         }
