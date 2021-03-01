@@ -30,6 +30,7 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
     ImageDownloader<ViewHolder> mImageDownloader;
 
     android.os.Handler mHandler;
+
     //endregion
 
 
