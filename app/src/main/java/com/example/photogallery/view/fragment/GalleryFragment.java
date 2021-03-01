@@ -1,9 +1,7 @@
 package com.example.photogallery.view.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +15,7 @@ import com.example.photogallery.adapter.RecyclerViewGalleryAdapter;
 import com.example.photogallery.databinding.FragmentGalleryBinding;
 import com.example.photogallery.services.ImageDownloader;
 import com.example.photogallery.viewmodel.GalleryItemViewModel;
+import com.example.photogallery.viewmodel.MainViewModel;
 
 public class GalleryFragment extends Fragment {
 
@@ -34,7 +33,9 @@ public class GalleryFragment extends Fragment {
     GalleryItemViewModel mGalleryItemViewModel;
     RecyclerViewGalleryAdapter mGalleryAdapter;
 
+    MainViewModel mMainViewModel;
     Handler mHandler;
+
 
     ImageDownloader<RecyclerViewGalleryAdapter.ViewHolder> mImageDownloader;
     //endregion
@@ -43,7 +44,7 @@ public class GalleryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mImageDownloader = new ImageDownloader();
-
+        mMainViewModel = new MainViewModel();
         mImageDownloader.start();
         mImageDownloader.getLooper();
     }
@@ -66,12 +67,20 @@ public class GalleryFragment extends Fragment {
                 new GridLayoutManager(getContext(), 3));
         mGalleryItemViewModel = new GalleryItemViewModel();
 
-        FetchItem fetchItem = new FetchItem();
-        fetchItem.execute();
+
+        mHandler=new Handler();
+        mGalleryAdapter=new RecyclerViewGalleryAdapter(getContext(),mImageDownloader);
+        mGalleryAdapter.setHandler(mHandler);
+        mFragmentGalleryBindingm.recyclerViewListGallery.setAdapter(mGalleryAdapter);
+
+//
+//        FetchItem fetchItem = new FetchItem();
+//        fetchItem.execute();
+
 
     }
 
-    public class FetchItem extends AsyncTask<Void, Void, RecyclerViewGalleryAdapter> {
+    /*public class FetchItem extends AsyncTask<Void, Void, RecyclerViewGalleryAdapter> {
 
         @Override
         protected RecyclerViewGalleryAdapter doInBackground(Void... voids) {
@@ -90,5 +99,5 @@ public class GalleryFragment extends Fragment {
             super.onPostExecute(s);
             mFragmentGalleryBindingm.recyclerViewListGallery.setAdapter(s);
         }
-    }
+    }*/
 }

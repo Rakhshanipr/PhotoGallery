@@ -34,20 +34,36 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
     //endregion
 
 
+    public RecyclerViewGalleryAdapter(Context context, ImageDownloader imageDownloader) {
+
+        mGalleryItemRepository = GalleryItemRepository.getInstance();
+        mGalleryItemRepository.setListners(new GalleryItemRepository.Listners() {
+            @Override
+            public void onRetrofitResponse(List<GalleryItem> items) {
+                mList=items;
+                RecyclerViewGalleryAdapter.this.notifyDataSetChanged();
+            }
+        });
+        mGalleryItemRepository.getItemsAsync();
+        mContext = context;
+
+        mImageDownloader=imageDownloader;
+    }
+
+    public List<GalleryItem> getList() {
+        return mList;
+    }
+
+    public void setList(List<GalleryItem> list) {
+        mList = list;
+    }
+
     public android.os.Handler getHandler() {
         return mHandler;
     }
 
     public void setHandler(Handler handler) {
         mHandler = handler;
-    }
-
-    public RecyclerViewGalleryAdapter(Context context, ImageDownloader imageDownloader) {
-        mGalleryItemRepository = GalleryItemRepository.getInstance();
-        mList = mGalleryItemRepository.getItems();
-        mContext = context;
-
-        mImageDownloader=imageDownloader;
     }
 
     @NonNull
@@ -71,11 +87,13 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemCount() {
+        if (mList==null){
+            return 0;
+        }
         return mList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
        public GalleryItem mGalleryItem;
        public GalleryItemBinding mGalleryItemBinding;
 
@@ -89,20 +107,19 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         public void bind(GalleryItem galleryItem) {
+
+            mImageDownloader.setHandlerSetPhoto(mHandler);
             mGalleryItem = galleryItem;
 
 //            Picasso.get().load(mGalleryItem.getUrlS()).into(mGalleryItemBinding.imageViewPhoto);
             mGalleryItemBinding.imageViewPhoto.setImageResource(R.mipmap.ic_launcher);
             mImageDownloader.queueImageMessage(this, mGalleryItem.getUrl());
-
-            mImageDownloader.setHandlerSetPhoto(mHandler);
             mImageDownloader.setCallBacks(new ImageDownloader.CallBacks() {
                 @Override
                 public void bindBitmap(ViewHolder viewHolder,Bitmap bitmap) {
                     viewHolder.mGalleryItemBinding.imageViewPhoto.setImageBitmap(bitmap);
                 }
             });
-
         }
     }
 }

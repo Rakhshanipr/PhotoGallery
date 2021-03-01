@@ -1,18 +1,25 @@
 package com.example.photogallery.viewmodel;
 
+import com.example.photogallery.repository.GalleryItemRepository;
 import com.example.photogallery.services.model.GalleryItem;
 import com.example.photogallery.services.network.FlickrFetcher;
 
 import java.io.IOException;
+import java.util.List;
 
 public class GalleryItemViewModel {
 
     //region defind variable
     GalleryItem mGalleryItem;
+
+    GalleryItemRepository mItemRepository;
     //endregion
 
     public GalleryItemViewModel() {
+        mItemRepository=GalleryItemRepository.getInstance();
     }
+
+
 
     public GalleryItemViewModel(GalleryItem galleryItem) {
         mGalleryItem = galleryItem;

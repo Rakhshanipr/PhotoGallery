@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
@@ -38,17 +39,46 @@ public class GalleryItemRepository {
     private List<GalleryItem> mItems = new ArrayList<>();
 
     private IFlickrService mFlickrService;
+
+    Listners mListners;
+
     //endregion
+
+
+    public Listners getListners() {
+        return mListners;
+    }
+
+    public void setListners(Listners listners) {
+        mListners = listners;
+    }
 
     public GalleryItemRepository(){
 
         Type type=new TypeToken<List<GalleryItem>>(){}.getType();
-        Object typeAdapter=new GetGalleryItemDeserialize()7;
+        Object typeAdapter=new GetGalleryItemDeserialize();
         Retrofit retrofit= RetrofitInstance.getInstance(type,typeAdapter);
         mFlickrService=retrofit.create(IFlickrService.class);
     }
 
-    public List<GalleryItem> getItems() {
+    public void getItemsAsync(){
+        Call<List<GalleryItem>> call=mFlickrService.listItems(RetrofitInstance.QUERY_PARAMETERS);
+
+        call.enqueue(new Callback<List<GalleryItem>>() {
+            @Override
+            public void onResponse(Call<List<GalleryItem>> call, Response<List<GalleryItem>> response) {
+                mListners.onRetrofitResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<GalleryItem>> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+  /*  public List<GalleryItem> getItems() {
 
         Call<List<GalleryItem>> call=mFlickrService.listItems(RetrofitInstance.QUERY_PARAMETERS);
         try {
@@ -58,7 +88,7 @@ public class GalleryItemRepository {
             e.printStackTrace();
         }
 
-        /*String uri = FlickrFetcher.generateUri();
+        *//*String uri = FlickrFetcher.generateUri();
 
         FlickrFetcher flickerFetcher = new FlickrFetcher();
 
@@ -70,9 +100,9 @@ public class GalleryItemRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return mItems;*/
+        return mItems;*//*
         return null;
-    }
+    }*/
 
 //    private List<GalleryItem> parseJson(JSONObject jsonBodyObject) throws JSONException {
 //
@@ -98,5 +128,9 @@ public class GalleryItemRepository {
 //
 //        return list;
 //    }
+
+    public interface Listners{
+        void onRetrofitResponse(List<GalleryItem> items);
+    }
 
 }

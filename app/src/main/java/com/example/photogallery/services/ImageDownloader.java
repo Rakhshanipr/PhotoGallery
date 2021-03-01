@@ -55,10 +55,10 @@ public class ImageDownloader<T> extends HandlerThread {
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == MESSAGE_DOWNLOAD) {
-                    RecyclerViewGalleryAdapter.ViewHolder viewHplder= (RecyclerViewGalleryAdapter.ViewHolder) msg.obj;
+                    RecyclerViewGalleryAdapter.ViewHolder viewHolder= (RecyclerViewGalleryAdapter.ViewHolder) msg.obj;
 
                     try {
-                        byte[] photoByteArray=new FlickrFetcher().getBytes(viewHplder.mGalleryItem.getUrl());
+                        byte[] photoByteArray=new FlickrFetcher().getBytes(viewHolder.mGalleryItem.getUrl());
 
                         Bitmap bitmap= BitmapFactory
                                 .decodeByteArray(photoByteArray,0,photoByteArray.length);
@@ -66,10 +66,10 @@ public class ImageDownloader<T> extends HandlerThread {
                         mHandlerSetPhoto.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (viewHplder.mGalleryItem.getUrl()!=mTargetUri.get(viewHplder))
+                                if (viewHolder.mGalleryItem.getUrl()!=mTargetUri.get(viewHolder))
                                     return;
 
-                                mCallBacks.bindBitmap(viewHplder,bitmap);
+                                mCallBacks.bindBitmap(viewHolder,bitmap);
 
                             }
                         });
