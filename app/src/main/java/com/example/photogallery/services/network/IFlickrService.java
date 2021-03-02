@@ -1,7 +1,6 @@
 package com.example.photogallery.services.network;
 
 import com.example.photogallery.services.model.GalleryItem;
-import com.example.photogallery.services.model.network.FlickrResponse;
 
 import java.util.List;
 import java.util.Map;

@@ -1,5 +1,7 @@
 package com.example.photogallery.viewmodel;
 
+import androidx.lifecycle.ViewModel;
+
 import com.example.photogallery.repository.GalleryItemRepository;
 import com.example.photogallery.services.model.GalleryItem;
 import com.example.photogallery.services.network.FlickrFetcher;
@@ -7,7 +9,7 @@ import com.example.photogallery.services.network.FlickrFetcher;
 import java.io.IOException;
 import java.util.List;
 
-public class GalleryItemViewModel {
+public class GalleryItemViewModel extends ViewModel {
 
     //region defind variable
     GalleryItem mGalleryItem;

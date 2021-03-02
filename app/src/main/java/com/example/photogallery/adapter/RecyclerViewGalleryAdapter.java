@@ -35,18 +35,7 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     public RecyclerViewGalleryAdapter(Context context, ImageDownloader imageDownloader) {
-
-        mGalleryItemRepository = GalleryItemRepository.getInstance();
-        mGalleryItemRepository.setListners(new GalleryItemRepository.Listners() {
-            @Override
-            public void onRetrofitResponse(List<GalleryItem> items) {
-                mList=items;
-                RecyclerViewGalleryAdapter.this.notifyDataSetChanged();
-            }
-        });
-        mGalleryItemRepository.getItemsAsync();
         mContext = context;
-
         mImageDownloader=imageDownloader;
     }
 
@@ -82,7 +71,6 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(mList.get(position));
-
     }
 
     @Override
@@ -100,26 +88,17 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
         public ViewHolder(GalleryItemBinding galleryItemBinding) {
             super(galleryItemBinding.getRoot());
 
-
             mGalleryItemBinding = galleryItemBinding;
 
             mGalleryItemBinding.setGallertItemViewModel(new GalleryItemViewModel());
         }
 
         public void bind(GalleryItem galleryItem) {
-
             mImageDownloader.setHandlerSetPhoto(mHandler);
             mGalleryItem = galleryItem;
-
-//            Picasso.get().load(mGalleryItem.getUrlS()).into(mGalleryItemBinding.imageViewPhoto);
-            mGalleryItemBinding.imageViewPhoto.setImageResource(R.mipmap.ic_launcher);
-            mImageDownloader.queueImageMessage(this, mGalleryItem.getUrl());
-            mImageDownloader.setCallBacks(new ImageDownloader.CallBacks() {
-                @Override
-                public void bindBitmap(ViewHolder viewHolder,Bitmap bitmap) {
-                    viewHolder.mGalleryItemBinding.imageViewPhoto.setImageBitmap(bitmap);
-                }
-            });
+            Picasso.get()
+                    .load(mGalleryItem.getUrl())
+                    .into(mGalleryItemBinding.imageViewPhoto);
         }
     }
 }
