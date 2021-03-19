@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetGalleryItemDeserialize implements JsonDeserializer<List<GalleryItem>> {
+
     @Override
     public List<GalleryItem> deserialize(JsonElement json
             , Type typeOfT

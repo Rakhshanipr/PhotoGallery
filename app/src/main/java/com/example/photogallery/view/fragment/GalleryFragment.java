@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.example.photogallery.R;
 import com.example.photogallery.adapter.RecyclerViewGalleryAdapter;
 import com.example.photogallery.databinding.FragmentGalleryBinding;
-import com.example.photogallery.services.ImageDownloader;
 import com.example.photogallery.services.model.GalleryItem;
 import com.example.photogallery.viewmodel.GalleryItemViewModel;
 import com.example.photogallery.viewmodel.PhotoGalleryViewModel;
@@ -40,18 +39,13 @@ public class GalleryFragment extends Fragment {
 
     PhotoGalleryViewModel mPhotoGalleryViewModel;
     Handler mHandler;
-
-
-    ImageDownloader<RecyclerViewGalleryAdapter.ViewHolder> mImageDownloader;
     //endregion
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mImageDownloader = new ImageDownloader();
-        mPhotoGalleryViewModel = new ViewModelProvider(requireActivity()).get(PhotoGalleryViewModel.class);
-        mImageDownloader.start();
-        mImageDownloader.getLooper();
+        mPhotoGalleryViewModel = new ViewModelProvider(requireActivity())
+                .get(PhotoGalleryViewModel.class);
     }
 
     @Override
@@ -85,10 +79,9 @@ public class GalleryFragment extends Fragment {
     }
 
     void setupAdapter(){
-        mGalleryAdapter=new RecyclerViewGalleryAdapter(getContext(),mImageDownloader);
+        mGalleryAdapter=new RecyclerViewGalleryAdapter(getContext());
         mGalleryAdapter.setHandler(mHandler);
         mFragmentGalleryBindingm.recyclerViewListGallery.setAdapter(mGalleryAdapter);
-
     }
 
 }

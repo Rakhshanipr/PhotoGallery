@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.photogallery.R;
 import com.example.photogallery.databinding.GalleryItemBinding;
 import com.example.photogallery.repository.GalleryItemRepository;
-import com.example.photogallery.services.ImageDownloader;
 import com.example.photogallery.services.model.GalleryItem;
 import com.example.photogallery.viewmodel.GalleryItemViewModel;
 import com.squareup.picasso.Picasso;
@@ -27,16 +26,13 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
     Context mContext;
     GalleryItemRepository mGalleryItemRepository;
 
-    ImageDownloader<ViewHolder> mImageDownloader;
-
     android.os.Handler mHandler;
 
     //endregion
 
 
-    public RecyclerViewGalleryAdapter(Context context, ImageDownloader imageDownloader) {
+    public RecyclerViewGalleryAdapter(Context context) {
         mContext = context;
-        mImageDownloader=imageDownloader;
     }
 
     public List<GalleryItem> getList() {
@@ -94,10 +90,10 @@ public class RecyclerViewGalleryAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         public void bind(GalleryItem galleryItem) {
-            mImageDownloader.setHandlerSetPhoto(mHandler);
             mGalleryItem = galleryItem;
             Picasso.get()
                     .load(mGalleryItem.getUrl())
+                    .placeholder(R.drawable.ic_launcher_background)
                     .into(mGalleryItemBinding.imageViewPhoto);
         }
     }
