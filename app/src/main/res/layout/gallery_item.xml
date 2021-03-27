@@ -6,9 +6,6 @@
 
 
     <data>
-        <variable
-            name="GallertItemViewModel"
-            type="com.example.photogallery.viewmodel.GalleryItemViewModel" />
     </data>
 
 

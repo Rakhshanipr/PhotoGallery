@@ -1,4 +1,4 @@
-package com.example.photogallery.services.model;
+package com.example.photogallery.data.model;
 
 public class GalleryItem {
 

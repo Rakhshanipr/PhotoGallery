@@ -1,6 +1,6 @@
-package com.example.photogallery.services;
+package com.example.photogallery.data.remote.retrofit;
 
-import com.example.photogallery.services.model.GalleryItem;
+import com.example.photogallery.data.model.GalleryItem;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

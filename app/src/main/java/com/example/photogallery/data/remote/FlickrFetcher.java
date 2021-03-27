@@ -1,4 +1,4 @@
-package com.example.photogallery.services.network;
+package com.example.photogallery.data.remote;
 
 import android.net.Uri;
 

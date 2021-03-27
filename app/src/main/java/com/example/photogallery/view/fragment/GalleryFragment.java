@@ -3,9 +3,14 @@ package com.example.photogallery.view.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -15,8 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.example.photogallery.R;
 import com.example.photogallery.adapter.RecyclerViewGalleryAdapter;
 import com.example.photogallery.databinding.FragmentGalleryBinding;
-import com.example.photogallery.services.model.GalleryItem;
-import com.example.photogallery.viewmodel.GalleryItemViewModel;
+import com.example.photogallery.data.model.GalleryItem;
 import com.example.photogallery.viewmodel.PhotoGalleryViewModel;
 
 import java.util.List;
@@ -33,8 +37,7 @@ public class GalleryFragment extends Fragment {
     //endregion
 
     //region defind variable
-    FragmentGalleryBinding mFragmentGalleryBindingm;
-    GalleryItemViewModel mGalleryItemViewModel;
+    FragmentGalleryBinding mFragmentGalleryBinding;
     RecyclerViewGalleryAdapter mGalleryAdapter;
 
     PhotoGalleryViewModel mPhotoGalleryViewModel;
@@ -44,32 +47,68 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+
         mPhotoGalleryViewModel = new ViewModelProvider(requireActivity())
                 .get(PhotoGalleryViewModel.class);
+
+        mPhotoGalleryViewModel.fetchItems();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mFragmentGalleryBindingm = DataBindingUtil.inflate(inflater
+        mFragmentGalleryBinding = DataBindingUtil.inflate(inflater
                 , R.layout.fragment_gallery, container
                 , false);
 
         initial();
         mHandler = new Handler();
-        return mFragmentGalleryBindingm.getRoot();
+        return mFragmentGalleryBinding.getRoot();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_search_gallery_itemm,menu);
+
+
+        MenuItem menuItemSearch=menu.findItem(R.id.app_bar_search);
+
+        SearchView searchView=(SearchView)menuItemSearch.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mPhotoGalleryViewModel.fetchSearchLiveData(query);
+                mPhotoGalleryViewModel.saveQueryInPref(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     private void initial() {
-        mFragmentGalleryBindingm.recyclerViewListGallery.setLayoutManager(
+        mFragmentGalleryBinding.recyclerViewListGallery.setLayoutManager(
                 new GridLayoutManager(getContext(), 3));
-        mGalleryItemViewModel =new ViewModelProvider(requireActivity())
-                .get(GalleryItemViewModel.class);
         mHandler=new Handler();
         setupAdapter();
 
-        mPhotoGalleryViewModel.getLiveData().observe(getActivity(), new Observer<List<GalleryItem>>() {
+        mPhotoGalleryViewModel.getLiveDataSearch().observe(getActivity(), new Observer<List<GalleryItem>>() {
+            @Override
+            public void onChanged(List<GalleryItem> galleryItems) {
+                mGalleryAdapter.setList(galleryItems);
+                mGalleryAdapter.notifyDataSetChanged();
+            }
+        });
+
+        mPhotoGalleryViewModel.getLiveDataPopular().observe(getActivity(), new Observer<List<GalleryItem>>() {
             @Override
             public void onChanged(List<GalleryItem> list) {
                 mGalleryAdapter.setList(list);
@@ -81,7 +120,6 @@ public class GalleryFragment extends Fragment {
     void setupAdapter(){
         mGalleryAdapter=new RecyclerViewGalleryAdapter(getContext());
         mGalleryAdapter.setHandler(mHandler);
-        mFragmentGalleryBindingm.recyclerViewListGallery.setAdapter(mGalleryAdapter);
+        mFragmentGalleryBinding.recyclerViewListGallery.setAdapter(mGalleryAdapter);
     }
-
 }

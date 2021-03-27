@@ -1,6 +1,6 @@
-package com.example.photogallery.services.network;
+package com.example.photogallery.data.remote.retrofit;
 
-import com.example.photogallery.services.model.GalleryItem;
+import com.example.photogallery.data.model.GalleryItem;
 
 import java.util.List;
 import java.util.Map;
