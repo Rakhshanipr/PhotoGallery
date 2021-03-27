@@ -12,6 +12,7 @@ public class QueryPreferences {
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString(PREF_KEY_SEARCH,value);
+
         editor.apply();
     }
 
